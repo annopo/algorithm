@@ -16,27 +16,48 @@ void swap(int *x, int *y) {
   *y = tmp;
 }
 
-int partition(int array[], int left, int right) {
-  int pivot = array[right]; // 配列の最後の要素をpivotとする
-  int i = left - 1;
-
-  for (int j = 1; j <= right - 1; j++) {
-    if (array[j] <= pivot) {
-      i++;
-      swap(&array[i], &array[j]);
-    }
-  }
-  swap(&array[i + 1], &array[right]);
-  return (i + 1);
-}
-
 // クイックソートをする関数
 void quickSort(int array[], int left, int right) {
-  if (left < right) {
-    int pivot = partition(array, left, right);
-    quickSort(array, left, pivot - 1);
-    quickSort(array, pivot + 1, right);
+  int Left, Right;
+  int pivot;
+
+  // 初期値は引数にする
+  Left = left;
+  Right = right;
+
+  // 基準は真ん中に設定する
+  pivot = array[(left + right) / 2];
+
+  // ソーティング
+  while (1) {
+
+    // 基準より小さい値を左から見つけていく
+    while (array[Left] < pivot)
+      Left++;
+
+    // 基準より大きい値を右から見つけていく
+    while (array[Right] > pivot)
+      Right--;
+
+    // 見つかった値の順序が逆になったら終了
+    if (Left >= Right)
+      break;
+
+    // 値を交換する
+    swap(&array[Left], &array[Right]);
+
+    // 次の値に移動
+    Left++;
+    Right--;
   }
+
+  // 左のデータ群を対象にクイックソートを再帰
+  if (left < Left - 1)
+    quickSort(array, left, Left - 1);
+
+  // 右のデータ群を対象にクイックソートを再帰
+  if (Right + 1 < right)
+    quickSort(array, Right + 1, right);
 }
 
 int main(void) {
@@ -64,7 +85,7 @@ int main(void) {
   start = clock();
   printf("Sort start...");
   // ソートを行う関数の呼び出し
-  quickSort(sort, 1, N);
+  quickSort(sort, 0, N - 1);
   printf("Sort end.\n");
   end = clock();
 
